@@ -8,10 +8,27 @@ class VT extends Upload
     const PASSWORD = "root_password";
     const DATABASE = "phpturkiye";
     protected static $connection;
+    public static $table;
+    public static $select = "*";
 
     public function __construct()
     {
         self::__connect();
+    }
+
+    public static function select($selectColumn)
+    {
+        self::$select = is_array($selectColumn) ? implode(",", $selectColumn) : $selectColumn;
+        self::$table = "";
+        return new self;
+    }
+
+
+    public static function table($tabelName)
+    {
+        self::$table = $tabelName;
+        self::$select = "*";
+        return new self;
     }
 
     // Veritabanı bağlantısı
@@ -27,8 +44,6 @@ class VT extends Upload
 
             // PDO hata modunu ayarlıyoruz
             self::$connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-
-            echo "Veritabanı bağlantısı başarılı!"; // Test amaçlı çıktı
         } catch (PDOException $error) {
             // Daha detaylı hata bilgisi
             echo "Veritabanı bağlantı hatası:<br>";
